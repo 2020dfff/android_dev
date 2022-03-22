@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/button_rsa"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="30dp"
+        android:text="rsa加解密/加签验签测试"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_rsa"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="rsa加解密测试结果"/>
+
+    <TextView
+        android:id="@+id/txt_rsa_sign"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="rsa加签验签测试结果"/>
+
+    <Button
+        android:id="@+id/button_sm4"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="60dp"
+        android:text="sm4加解密测试"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_sm4_cbc"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="sm4cbc加解密测试结果"/>
+
+    <TextView
+        android:id="@+id/txt_sm4_ecb"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="sm4ecb加解密测试结果"/>
+
+
+    <Button
+        android:id="@+id/keystore"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="60dp"
+        android:text="keystore"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</LinearLayout>
