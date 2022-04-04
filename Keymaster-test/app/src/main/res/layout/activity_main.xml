@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="30dp"
-        android:text="rsa加解密/加签验签测试"
+        android:text="AES加解密/加签验签测试"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,13 +22,13 @@
         android:id="@+id/txt_rsa"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="rsa加解密测试结果"/>
+        android:text="aes加解密测试结果"/>
 
     <TextView
         android:id="@+id/txt_rsa_sign"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="rsa加签验签测试结果"/>
+        android:text="aes加签验签测试结果"/>
 
     <Button
         android:id="@+id/button_sm4"

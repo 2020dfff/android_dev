@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -37,6 +38,7 @@ public class KeymasterActivity extends AppCompatActivity {
     private static final String TAG = KeymasterActivity.class.getSimpleName();
 
     @Override
+    //MainActivity中跳转至此
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_keystore);
@@ -142,7 +144,7 @@ public class KeymasterActivity extends AppCompatActivity {
         }
     }
 
-    public void doSign(View view) {
+    public void doSign(View view) throws NoSuchAlgorithmException {
         if (currentSelectedKeyAlias == null) {
             Toast.makeText(getApplicationContext(), "请先选取alias", Toast.LENGTH_SHORT).show();
             return;
@@ -157,7 +159,7 @@ public class KeymasterActivity extends AppCompatActivity {
         }
     }
 
-    public void doVerify(View view) {
+    public void doVerify(View view) throws NoSuchAlgorithmException {
         if (currentSelectedKeyAlias == null) {
             Toast.makeText(getApplicationContext(), "请先选取alias", Toast.LENGTH_SHORT).show();
             return;
@@ -171,7 +173,7 @@ public class KeymasterActivity extends AppCompatActivity {
         boolean verify = KeyStoreUtil.get().verify(shadata, Base64.decode(signedData, Base64.DEFAULT), currentSelectedKeyAlias);
 //        boolean verify = KeyStoreUtil.get().verify(plainText.getBytes(),signedData.getBytes(),currentSelectedKeyAlias);
 
-        tvCipher.setText(getString(R.string.verify_content, (verify) ? "match" : "not match"));
+        tvCipher.setText(getString(R.string.verify_content, (verify) ? "still match" : "not match"));
 
     }
 

@@ -12,8 +12,18 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.Security;
 import java.util.Arrays;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -32,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        //keystore测试页面
         Test = (Button) findViewById(R.id.keystore);
         assert Test != null;
         Test.setOnClickListener( new View.OnClickListener() {
@@ -41,15 +53,17 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(it);
             }
         });
+        //点击事件，跳转到Key-masterActivity中的onCreate方法
+
 
         Rsa = (Button) findViewById(R.id.button_rsa);
         assert Rsa != null;
         Rsa.setOnClickListener ( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                testRSA();
+                testAES();
             }
-        });
+        });//这里点击事件要改一下
 
         Sm4 = (Button) findViewById(R.id.button_sm4);
         assert Sm4 != null;
@@ -75,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void testSM4() throws UnsupportedEncodingException {
+        //疑问：iv参数为什么在加解密中一样，还需要分别写两次，如果只写一个结果有什么影响？
         byte[] sourceText = "textdata123456".getBytes("UTF-8");
         byte[] enc_iv = "0123456abcdef120".getBytes("UTF-8");
         byte[] dec_iv = "0123456abcdef120".getBytes("UTF-8");
@@ -122,27 +137,34 @@ public class MainActivity extends AppCompatActivity {
             String publicKey = new String(Base64Utils.encode(keyPair.getPublic().getEncoded()));
             System.out.println("私钥:" + privateKey);
             System.out.println("公钥:" + publicKey);
+
+
             // RSA加密
-            String data = "testdata123456";//加解密测试源数据
+            //String data = "testdata123456"; 加解密测试源数据
+            String data = "shjd090701";
             String encryptData = rsa_test.encrypt(data, rsa_test.getPublicKey(publicKey));
             System.out.println("加密后内容:" + encryptData);
             // RSA解密
             String decryptData = rsa_test.decrypt(encryptData, rsa_test.getPrivateKey(privateKey));
             System.out.println("解密后内容:" + decryptData);
+
             //获取测试结果更新UI
-            boolean enc_result = data.equals(decryptData);
+            boolean enc_result = data.equals(decryptData);//这个函数可以做比较，判断加解密是不是成功还原出明文了
             String enc_showtext = "rsa encrypt test fail";
             TextView enc_text = findViewById(R.id.txt_rsa);
+            //下四行不需修改，改名字即可
             if (enc_result) {
                 enc_showtext = "rsa encrypt test success";
             }
             enc_text.setText(enc_showtext.toCharArray(), 0, enc_showtext.length());
+
 
             // RSA签名
             String sign = rsa_test.sign(data, rsa_test.getPrivateKey(privateKey));
             // RSA验签
             boolean sign_result = rsa_test.verify(data, rsa_test.getPublicKey(publicKey), sign);
             System.out.print("验签结果:" + sign_result);
+
             //获取测试结果更新UI
             String sign_showtext = "rsa sign test fail";
             TextView sign_text = findViewById(R.id.txt_rsa_sign);
@@ -150,9 +172,50 @@ public class MainActivity extends AppCompatActivity {
                 sign_showtext = "rsa sign test success";
             }
             sign_text.setText(sign_showtext.toCharArray(), 0, sign_showtext.length());
-        } catch (Exception e) {
+        }
+
+        catch (Exception e) {
             e.printStackTrace();
             System.out.print("加解密异常");
         }
     }
+
+
+
+    public void testAES(){
+        AES aes_test = new AES();
+        try {
+            // 生成密钥
+            SecretKey key = aes_test.SecretKey();
+            // AES加密
+            // byte[] plaintext = "textdata123456".getBytes("UTF-8");
+            String plaintext = "shjd090701";// 加解密测试源数据
+            String encryptData = aes_test.encrypt(plaintext,key);
+            System.out.println("加密后内容:" + encryptData);
+            // AES解密
+            // byte[] encrypt = encryptData.getBytes();
+            String decryptData = aes_test.decrypt(encryptData,key);
+            System.out.println("解密后内容:" + decryptData);
+
+            //获取测试结果更新UI
+            boolean enc_result = plaintext.equals(decryptData);//这个函数可以做比较，判断加解密是不是成功还原出明文了
+            String enc_showtext = "AES encrypt test fail";
+            TextView enc_text = findViewById(R.id.txt_rsa);
+            //下四行不需修改，改名字即可
+            if (enc_result) {
+                enc_showtext = "AES encrypt test success";
+            }
+            enc_text.setText(enc_showtext.toCharArray(), 0, enc_showtext.length());
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.out.print("加解密异常");
+        }
+
+
+    }
+
 }
+
+

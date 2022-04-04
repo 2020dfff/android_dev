@@ -41,7 +41,9 @@ public class KeyStoreUtil {
     private KeyStoreUtil(){
         init();
     }
+    //有一个密钥存入和取出的过程
 
+    //在这里初始化，通过AndroidKeyStore初始化
     private void init() {
         try {
             keyStore = KeyStore.getInstance("AndroidKeyStore");
@@ -174,8 +176,9 @@ public class KeyStoreUtil {
             RSAPublicKey publicKey = (RSAPublicKey) privateKeyEntry.getCertificate().getPublicKey();
 
             Cipher cipher = Cipher.getInstance(CIPHER_TRANSFORMATION);
-            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);//需要指出加解密模式，给出使用哪种算法等信息
             return cipher.doFinal(data);
+            //安卓体系下加解密常见形式
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (InvalidKeyException e) {
@@ -229,19 +232,40 @@ public class KeyStoreUtil {
         return null;
     }
 
+
+    /**
+     * 签名前压缩算法
+     * @param data 原始数据
+     * */
+
+    public byte[] Digestmessage (byte[] data) throws NoSuchAlgorithmException {
+        byte[] message = data;
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] digest = md.digest(message);
+        return digest;
+
+    }
+
     /**
      * 对数据进行签名
      *
      * @param data
      * @param alias
      * */
-    public byte[] sign(byte[] data, String alias){
+
+    public byte[] sign(byte[] data, String alias) throws NoSuchAlgorithmException {
+
+        byte[] digestedmessage = Digestmessage(data);
+
+               //加签前做一个压缩摘要处理
+
         try{
             //取出密钥
             KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry)keyStore.getEntry(alias, null);
+
             Signature s = Signature.getInstance("SHA256withRSA");
             s.initSign(privateKeyEntry.getPrivateKey());
-            s.update(data);
+            s.update(digestedmessage);
             return s.sign();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -266,14 +290,17 @@ public class KeyStoreUtil {
      * @param signatureData 签署的数据
      * @param alias
      * */
-    public boolean verify (byte[] data, byte[] signatureData, String alias){
+    public boolean verify (byte[] data, byte[] signatureData, String alias) throws NoSuchAlgorithmException {
+
+        byte[] digestedmessage = Digestmessage(data);
+
         try{
             //取出密钥
             KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry)keyStore.getEntry(alias, null);
 
             Signature s = Signature.getInstance("SHA256withRSA");
             s.initVerify(privateKeyEntry.getCertificate());
-            s.update(data);
+            s.update(digestedmessage);
             return s.verify(signatureData);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();

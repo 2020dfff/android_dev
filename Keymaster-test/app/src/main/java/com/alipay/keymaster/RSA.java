@@ -12,7 +12,6 @@ import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
 
-
 public class RSA {
 
     /**
@@ -24,6 +23,8 @@ public class RSA {
      * RSA最大解密密文大小
      */
     private static final int MAX_DECRYPT_BLOCK = 128;
+
+    //为什么这里有最大加密明文大小和最大解密密文大小，与密钥长度相关
 
     /**
      * 获取密钥对
