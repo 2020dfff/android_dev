@@ -70,11 +70,7 @@ public class MainActivity extends AppCompatActivity {
         Sm4.setOnClickListener ( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    testSM4();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                testWhiteBoxAES();
             }
         });
     }
@@ -215,6 +211,40 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
+
+    public void testWhiteBoxAES() {
+
+        String key="aes key";
+        mytest mytest = new mytest(key);
+
+        String plain="test aes";
+        //mytest.setPlaintext(plain);
+
+        mytest.Encrypt(plain);
+
+        byte [] plaintext = mytest.getPlaintext();
+        byte [] ciphertext = mytest.getCiphertext();
+
+        byte [] decrypted = mytest.Decrypt();
+        mytest.showPlaintext();
+        mytest.showCiphertext();
+
+        //获取测试结果更新UI
+        boolean ecb_result = Arrays.equals(plaintext, decrypted);
+        TextView ecb_text = findViewById(R.id.txt_sm4_ecb);
+        String ecb_showtext = "aes test fail";
+        if (ecb_result) {
+            ecb_showtext = "aes test success";
+        }
+        ecb_text.setText(ecb_showtext.toCharArray(), 0, ecb_showtext.length());
+
+
+    }
+
+
+
 
 }
 
