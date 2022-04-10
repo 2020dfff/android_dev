@@ -1,6 +1,8 @@
 
 package com.alipay.keymaster;
 
+import static java.sql.DriverManager.println;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -12,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.UnsupportedEncodingException;
+import java.io.ByteArrayOutputStream;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -86,6 +89,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void testSM4() throws UnsupportedEncodingException {
         //疑问：iv参数为什么在加解密中一样，还需要分别写两次，如果只写一个结果有什么影响？
+        //浅拷贝属于对象克隆的一种，值类型的字段会复制一份，而引用类型的字段拷贝的仅仅是引用地址，而该引用地址指向的实际对象空间其实只有一份；
+        //深拷贝相较于上面所示的浅拷贝，除了值类型字段会复制一份，引用类型字段所指向的对象，会在内存中也创建一个副本；
+        //这里System.arraycopy(out1, 0, iv, 0, 16)是浅拷贝，如果加密时候把iv给改了，解密的时候iv就是变化了，所以肯定不能只写一个...
         byte[] sourceText = "textdata123456".getBytes("UTF-8");
         byte[] enc_iv = "0123456abcdef120".getBytes("UTF-8");
         byte[] dec_iv = "0123456abcdef120".getBytes("UTF-8");
@@ -219,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
         String key="aes key";
         mytest mytest = new mytest(key);
 
-        String plain="test aes";
+        String plain="test aes hahahhahahahah";
         //mytest.setPlaintext(plain);
 
         mytest.Encrypt(plain);
@@ -244,8 +250,54 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void mytest_aes(){
+            //char plain[] = {"test aes hahahhahahahah"};
+            char mw[] = {0x32, 0x88, 0x31, 0xe0, 0x43, 0x5a, 0x31,              //明文
+                    0x37,0xf6, 0x30, 0x98, 0x07, 0xa8, 0x8d, 0xa2, 0x34};
+            char backup[] = {0x32, 0x88, 0x31, 0xe0, 0x43, 0x5a, 0x31,              //copy
+                    0x37,0xf6, 0x30, 0x98, 0x07, 0xa8, 0x8d, 0xa2, 0x34};
+            char key[] = {0x2b, 0x28, 0xab, 0x09, 0x7e, 0xae, 0xf7,             //密钥
+                    0xcf,0x15, 0xd2, 0x15, 0x4f, 0x16, 0xa6, 0x88, 0x3c};
+            //char mw[] = {"1234567893216549"};
+            //char key[] = {"1234567891234561"};
+            mytest_aes mytest_aes = new mytest_aes(key);
+
+            System.out.print("明文：");
+            for(int i = 0; i < 16; i++){
+                System.out.print(mw[i]);
+                // println ("%0X ",mw[i]);
+            }
+
+            System.out.print("密钥：");
+            for(int i = 0; i < 16; i++){
+                System.out.print(key[i]);
+            }
+            mytest_aes.Cipher(mw);
+            System.out.print("加密后：");
+            //printf("%s",mw);
+            for(int i = 0; i < 16; i++){
+                System.out.print(mw[i]);
+            }
+
+            mytest_aes.InvCipher(mw);
+            System.out.print("解密后：");
+            for(int i = 0; i < 16; i++){
+                System.out.print(mw[i]);
+            }
+
+        //获取测试结果更新UI
+        boolean ecb_result = Arrays.equals(backup, mw);
+        TextView ecb_text = findViewById(R.id.txt_sm4_ecb);
+        String ecb_showtext = "aes test fail";
+        if (ecb_result) {
+            ecb_showtext = "aes test success";
+        }
+        ecb_text.setText(ecb_showtext.toCharArray(), 0, ecb_showtext.length());
+
+    }
 
 
 }
+
 
 

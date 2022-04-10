@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="60dp"
-        android:text="sm4加解密测试"
+        android:text="AES加解密测试"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -50,7 +50,7 @@
         android:id="@+id/txt_sm4_ecb"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="sm4ecb加解密测试结果"/>
+        android:text="aes加解密测试结果"/>
 
 
     <Button
